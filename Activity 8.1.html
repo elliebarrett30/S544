@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Activity 8.2: Penguin Classification</title>
+<title>Activity 8.1: KNN and Decision Trees</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -2183,7 +2183,7 @@ vertical-align: -.125em;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Activity 8.2: Penguin Classification</h1>
+<h1 class="title">Activity 8.1: KNN and Decision Trees</h1>
 </div>
 
 
@@ -2200,8 +2200,8 @@ vertical-align: -.125em;
 </header>
 
 
-<p>Palmer Penguins Modeling</p>
-<div id="14999454" class="cell" data-execution_count="1">
+<p>KNN and Decision Trees</p>
+<div id="75271385" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -2219,14 +2219,14 @@ vertical-align: -.125em;
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Import the Palmer Penguins dataset and print out the first few rows.</p>
-<div id="be65f173" class="cell" data-execution_count="2">
+<div id="2a48aa01" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>penguins_df <span class="op">=</span> load_penguins()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>penguins_df.head</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>target_col <span class="op">=</span> <span class="st">&quot;bill_depth_mm&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="bd40b508" class="cell" data-execution_count="3">
+<div id="2f7a3911" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> penguins_df.copy()</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna(subset<span class="op">=</span>[target_col])</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2244,7 +2244,7 @@ Categorical columns (will be dummified): [&#39;species&#39;, &#39;island&#39;, &
 </div>
 </div>
 <p>Suppose we want to predict species using the other variables in the dataset. Dummify all variables that require this.</p>
-<div id="06849540" class="cell" data-execution_count="4">
+<div id="ce80b420" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>numeric_pipe <span class="op">=</span> Pipeline([</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;imputer&quot;</span>, SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;median&quot;</span>)),</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;scaler&quot;</span>, StandardScaler())</span>
@@ -2261,7 +2261,7 @@ Categorical columns (will be dummified): [&#39;species&#39;, &#39;island&#39;, &
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s use the other variables to predict species. Prepare your data and fit the following models on the entire dataset:</p>
-<div id="ed59754a" class="cell" data-execution_count="5">
+<div id="0b6f7b25" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    X, y, test_size<span class="op">=</span><span class="fl">0.25</span>, random_state<span class="op">=</span><span class="dv">42</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -2272,7 +2272,7 @@ Categorical columns (will be dummified): [&#39;species&#39;, &#39;island&#39;, &
 </div>
 <p>Let’s use the other variables to predict bill_depth_mm. Prepare your data and fit the following models on the entire dataset:</p>
 <p>Your best multiple linear regression model from before Two kNN models (for different values of K) A decision tree model</p>
-<div id="4b034066" class="cell" data-execution_count="6">
+<div id="43a3fb82" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Multiple Linear Regression&quot;</span>: Pipeline([</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;preprocess&quot;</span>, preprocessor),</span>
@@ -2296,7 +2296,7 @@ Categorical columns (will be dummified): [&#39;species&#39;, &#39;island&#39;, &
 <pre><code>[&#39;Multiple Linear Regression&#39;, &#39;kNN (k=3)&#39;, &#39;kNN (k=9)&#39;, &#39;Decision Tree&#39;]</code></pre>
 </div>
 </div>
-<div id="60c27e8a" class="cell" data-execution_count="7">
+<div id="88e1481e" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rmse(y_true, y_pred):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.sqrt(mean_squared_error(y_true, y_pred))</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2361,7 +2361,7 @@ Categorical columns (will be dummified): [&#39;species&#39;, &#39;island&#39;, &
 </div>
 </div>
 <p>Create a plot like the right plot of Fig 1. in our Model Validation chapter with the training and test error plotted for each of your four models.</p>
-<div id="f86ba131" class="cell" data-execution_count="8">
+<div id="dae79017" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">5</span>))</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>plt.plot(results_df[<span class="st">&quot;Model&quot;</span>], results_df[<span class="st">&quot;Train RMSE&quot;</span>], marker<span class="op">=</span><span class="st">&quot;o&quot;</span>, label<span class="op">=</span><span class="st">&quot;Training Error (RMSE)&quot;</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>plt.plot(results_df[<span class="st">&quot;Model&quot;</span>], results_df[<span class="st">&quot;Test RMSE&quot;</span>],  marker<span class="op">=</span><span class="st">&quot;o&quot;</span>, label<span class="op">=</span><span class="st">&quot;Test Error (RMSE)&quot;</span>)</span>
@@ -2382,7 +2382,7 @@ Categorical columns (will be dummified): [&#39;species&#39;, &#39;island&#39;, &
 </div>
 </div>
 <p>Which of your models was best?</p>
-<div id="5f5c78ba" class="cell" data-execution_count="9">
+<div id="d4779708" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>best_row <span class="op">=</span> results_df.loc[results_df[<span class="st">&quot;Test RMSE&quot;</span>].idxmin()]</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Best model based on Test RMSE:&quot;</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(best_row)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
